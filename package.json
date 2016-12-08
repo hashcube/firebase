@@ -1,0 +1,16 @@
+{
+  "name": "firebase",
+  "version": "1.0.0",
+  "devkit": {
+    "clientPaths": {
+      "firebase": "js"
+    },
+    "extensions": {
+      "build": "build",
+      "ios": "ios"
+    }
+  },
+  "dependencies": {
+    "fs-extra": "^1.0.0"
+  }
+}
