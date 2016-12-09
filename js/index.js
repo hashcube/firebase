@@ -11,18 +11,18 @@ var FireBase = Class(function () {
     if (!data) {
       return;
     }
-    NATIVE.plugins.sendEvent("FireBasePlugin", "setUserData", JSON.stringify(data));
+    NATIVE.plugins.sendEvent("FirebasePlugin", "setUserData", JSON.stringify(data));
   };
 
   this.logEvent = function (e_name, params) {
-    NATIVE.plugins.sendEvent("FireBasePlugin", "logEvent", JSON.stringify({
+    NATIVE.plugins.sendEvent("FirebasePlugin", "logEvent", JSON.stringify({
       eventName: e_name,
       params: params || {}
     }));
   };
 
   this.setScreen = function (name) {
-    NATIVE.plugins.sendEvent("FireBasePlugin", "setScreen", JSON.stringify({
+    NATIVE.plugins.sendEvent("FirebasePlugin", "setScreen", JSON.stringify({
       name: name
     }));
   };

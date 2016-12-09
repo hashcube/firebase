@@ -27,6 +27,7 @@
 }
 
 - (void) setUserData: (NSDictionary*) userData {
+  NSLog(@"{firebase} inside setUserData function");
   @try {
     [userData enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL* stop) {
       NSString *prop = (NSString *) key;
@@ -39,11 +40,12 @@
       }
     }];
   } @catch (NSException *exception) {
-    NSLOG(@"{firebase} Exception on setting user property: ", exception);
+    NSLog(@"{firebase} Exception on setting user property: %@", exception);
   } 
 }
 
 - (void) logEvent: (NSDictionary*) eventData {
+  NSLog(@"{firebase} inside logEvent function");
   @try {
     NSString *eventName = [eventData valueForKey:@"eventName"];
     NSDictionary *evtParams = [eventData objectForKey:@"params"];
@@ -51,14 +53,14 @@
     if (!evtParams || [evtParams count] <= 0) {
       [FIRAnalytics logEventWithName:eventName];
 
-      NSLOG(@"{firebase} Delivered event '%@'", eventName);
+      NSLog(@"{firebase} Delivered event '%@'", eventName);
     } else {
       [FIRAnalytics logEventWithName:eventName parameters:evtParams];
 
-      NSLOG(@"{firebase} Delivered event '%@' with %d params", eventName, (int)[evtParams count]);
+      NSLog(@"{firebase} Delivered event '%@' with %d params", eventName, (int)[evtParams count]);
     }
   } @catch (NSException *exception) {
-    NSLOG(@"{firebase} Exception while processing event: ", exception);
+    NSLog(@"{firebase} Exception while processing event: %@", exception);
   }
 }
 
