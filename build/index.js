@@ -12,9 +12,7 @@ exports.onCreateProject = function (api, app, config, cb) {
     addPlist = function () {
       return xcodeUtil.getXcodeProject(xcodeProjectPath)
         .then(function (xcodeProject) {
-          xcodeProject._project.addProductFile(plist_file, {
-            group: 'CustomTemplate'
-          });
+	  xcodeProject._project.addResourceFile(plist_file, null, 'CustomTemplate');
 
           return xcodeProject.write();
         });
