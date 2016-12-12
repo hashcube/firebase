@@ -51,7 +51,7 @@
     NSDictionary *evtParams = [eventData objectForKey:@"params"];
 
     if (!evtParams || [evtParams count] <= 0) {
-      [FIRAnalytics logEventWithName:eventName];
+      [FIRAnalytics logEventWithName:eventName parameters:nil];
 
       NSLog(@"{firebase} Delivered event '%@'", eventName);
     } else {
@@ -66,7 +66,7 @@
 
 - (void) setScreen: (NSDictionary*) screenData {
   @try {
-    [FIRAnalytics setScreenName: [screenData valueForKey:@"name"]];
+      [FIRAnalytics setScreenName: [screenData valueForKey:@"name"] screenClass:nil];
   } @catch (NSException *exception) {
     NSLOG(@"{firebase} Exception on set screen: ", exception);
   }
