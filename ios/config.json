@@ -1,0 +1,18 @@
+{
+  "code": [
+    "Firebase.h",
+    "FirebasePlugin.h",
+    "FirebasePlugin.mm"
+  ],
+  "frameworks": [
+    "FirebaseAnalytics.framework",
+    "FirebaseCore.framework",
+    "FirebaseInstanceID.framework",
+    "GoogleInterchangeUtilities.framework",
+    "GoogleSymbolUtilities.framework",
+    "GoogleToolboxForMac.framework"
+  ],
+  "additionalLinkerFlags": [
+    "-ObjC"
+  ]
+}
