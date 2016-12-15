@@ -20,7 +20,7 @@ exports.onCreateProject = function (api, app, config, cb) {
     srcFile, destFile, googlePlist;
 
   if (config.target !== 'native-ios' || !firebase.ios) {
-    return;
+    return Promise.resolve(true);
   }
 
   srcFile = path.join(app_path, firebase.ios),
