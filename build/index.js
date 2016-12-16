@@ -20,8 +20,6 @@ exports.onCreateProject = function (api, app, config, cb) {
           return xcodeProject.write();
         });
     },
-    addStrings = function () {
-    },
     srcFile, destFile, googleConf, clientConfig, projectInfo;
 
   if (config.target == 'native-ios' && firebase.ios) {
