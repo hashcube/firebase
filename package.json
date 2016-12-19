@@ -7,10 +7,12 @@
     },
     "extensions": {
       "build": "build",
-      "ios": "ios"
+      "ios": "ios",
+      "android": "android"
     }
   },
   "dependencies": {
-    "fs-extra": "^1.0.0"
+    "fs-extra": "^1.0.0",
+    "xmldoc": "^0.5.1"
   }
 }
