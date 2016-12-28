@@ -11,12 +11,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import java.util.Iterator;
 
+import android.support.v4.app.FragmentActivity;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.gms.appinvite.AppInvite;
+import com.google.android.gms.appinvite.AppInviteInvitationResult;
+import com.google.android.gms.appinvite.AppInviteReferral;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 
 
-public class FirebasePlugin implements IPlugin {
+public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFailedListener {
   private FirebaseAnalytics mFirebaseAnalytics;
-  private Activity _activity;
+  private FragmentActivity _activity;
 
   public FirebasePlugin() {
   }
@@ -24,10 +32,34 @@ public class FirebasePlugin implements IPlugin {
   public void onCreateApplication(Context applicationContext) {
   }
 
-  public void onCreate(Activity activity, Bundle savedInstanceState) {
+  public void onCreate(Activity activity, Bundle savedInstance) {
+  }
+
+  public void onCreate(FragmentActivity activity, Bundle savedInstanceState) {
     this._activity = activity;
     try {
       this.mFirebaseAnalytics = FirebaseAnalytics.getInstance(activity);
+
+      GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(activity)
+        .enableAutoManage(activity, this)
+        .addApi(AppInvite.API)
+        .build();
+
+      AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, activity, false)
+        .setResultCallback(
+          new ResultCallback<AppInviteInvitationResult>() {
+            @Override
+            public void onResult(AppInviteInvitationResult result) {
+              if (result.getStatus().isSuccess()) {
+                // Extract deep link from Intent
+                Intent intent = result.getInvitationIntent();
+                String deepLink = AppInviteReferral.getDeepLink(intent);
+                logger.log("{firebase} app launched from deeplink: " + deepLink);
+                // TODO: Can send events with url, Based on url,
+                // can do specific actions in game.
+              }
+            }
+          });
     } catch (Exception ex) {
       logger.log("{firebase} init - failure: " + ex.getMessage());
     }
@@ -142,5 +174,9 @@ public class FirebasePlugin implements IPlugin {
   }
 
   public void onBackPressed() {
+  }
+
+  @Override
+  public void onConnectionFailed(ConnectionResult connectionResult) {
   }
 }

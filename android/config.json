@@ -3,7 +3,8 @@
     "FirebasePlugin.java"
   ],
   "jars": [
-    "libs/hc-firebase-1.0.jar"
+    "libs/hc-firebase-1.0.jar",
+    "libs/gms-invites.jar"
   ],
   "injectionXML": "manifest.xml",
   "injectionXSL": "manifest.xsl"
