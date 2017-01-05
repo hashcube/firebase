@@ -26,6 +26,15 @@
   }
 }
 
+- (void) applicationDidBecomeActive:(UIApplication *)app {
+  @try {
+    [FIRAnalytics logEventWithName:kFIREventAppOpen parameters:nil];
+  }
+  @catch (NSException *exception) {
+    NSLOG(@"{firebase} Exception while logging appopen event: %@", exception);
+  }
+}
+
 - (void) setUserData: (NSDictionary*) userData {
   NSLog(@"{firebase} inside setUserData function");
   @try {
