@@ -66,6 +66,11 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public void onResume() {
+    if (this.mFirebaseAnalytics == null) {
+      return;
+    }
+
+    this.mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, null);
   }
 
   public void onStart() {
