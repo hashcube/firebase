@@ -4,7 +4,8 @@
   ],
   "jars": [
     "libs/hc-firebase-1.0.jar",
-    "libs/gms-invites.jar"
+    "libs/gms-invites.jar",
+    "libs/gms-tasks-10.0.1.jar"
   ],
   "injectionXML": "manifest.xml",
   "injectionXSL": "manifest.xsl"
