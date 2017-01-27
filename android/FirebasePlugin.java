@@ -14,6 +14,8 @@ import java.util.Iterator;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.analytics.FirebaseAnalytics.Event;
+import com.google.firebase.analytics.FirebaseAnalytics.Param;
 import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitationResult;
 import com.google.android.gms.appinvite.AppInviteReferral;
@@ -123,19 +125,46 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
       eventName = obj.getString("eventName");
       JSONObject paramsObj = obj.getJSONObject("params");
       Iterator<String> iter = paramsObj.keys();
+
       while (iter.hasNext()) {
         String key = iter.next();
-        String value = null;
+
         try {
-          value = paramsObj.getString(key);
+          if (Param.LEVEL.equals(key) || Param.SCORE.equals(key)) { //long
+            bundle.putLong(key, paramsObj.getLong(key));
+          } else if (Param.VALUE.equals(key)) { //double
+            bundle.putDouble(key, paramsObj.getDouble(key));
+          } else {
+            bundle.putString(key, paramsObj.getString(key));
+          }
+
+          // TODO: Need to implement using switch case. it suports for string from java 8 onwards.
+          //switch(key) {
+          //  case Param.LEVEL://long
+          //  case Param.SCORE:
+          //    bundle.putLong(key, paramsObj.getLong(key));
+          //    break;
+          //  case Param.VALUE: //double
+          //    bundle.putDouble(key, paramsObj.getDouble(key));
+          //    break;
+          //  case Param.CHARACTER:
+          //  case Param.GROUP_ID:
+          //  case Param.CONTENT_TYPE:
+          //  case Param.ITEM_ID:
+          //  case Param.ITEM_NAME:
+          //  case Param.VIRTUAL_CURRENCY_NAME:
+          //  case Param.ACHIEVEMENT_ID:
+          //  case Param.SIGN_UP_METHOD:
+          //  case Param.ITEM_CATEGORY:
+          //  default:
+          //    bundle.putString(key, paramsObj.getString(key));
+          //    break;
+          //}
         } catch (JSONException e) {
           logger.log("{firebase} track - failure: " + eventName + " - " + e.getMessage());
         }
-
-        if (value != null) {
-          bundle.putString(key, value);
-        }
       }
+
       this.mFirebaseAnalytics.logEvent(eventName, bundle);
       logger.log("{firebase} track - success: " + eventName);
     } catch (JSONException e) {
