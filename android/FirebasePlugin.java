@@ -10,8 +10,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
 
 import android.support.v4.app.FragmentActivity;
 
@@ -29,42 +27,8 @@ import com.google.android.gms.common.api.ResultCallback;
 public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFailedListener {
   private FirebaseAnalytics mFirebaseAnalytics;
   private FragmentActivity _activity;
-  private Map<String, String> events;
-  private Map<String, String> params;
-
-  private void init()
-  {
-    events = new HashMap<String, String>();
-    events.put("join_group", Event.JOIN_GROUP);
-    events.put("level_up", Event.LEVEL_UP);
-    events.put("post_score", Event.POST_SCORE);
-    events.put("select_content", Event.SELECT_CONTENT);
-    events.put("spend_virtual_currency", Event.SPEND_VIRTUAL_CURRENCY);
-    events.put("tutorial_begin", Event.TUTORIAL_BEGIN);
-    events.put("tutorial_complete", Event.TUTORIAL_COMPLETE);
-    events.put("unlock_achievement", Event.UNLOCK_ACHIEVEMENT);
-    events.put("share", Event.SHARE);
-    events.put("sign_up", Event.SIGN_UP);
-    events.put("present_offer", Event.PRESENT_OFFER);
-    events.put("login", Event.LOGIN);
-
-    params = new HashMap<String, String>();
-    params.put("group_id", Param.GROUP_ID);
-    params.put("character", Param.CHARACTER);
-    params.put("level", Param.LEVEL);
-    params.put("score", Param.SCORE);
-    params.put("content_type", Param.CONTENT_TYPE);
-    params.put("item_id", Param.ITEM_ID);
-    params.put("item_name", Param.ITEM_NAME);
-    params.put("virtual_currency_name", Param.VIRTUAL_CURRENCY_NAME);
-    params.put("value", Param.VALUE);
-    params.put("achievement_id", Param.ACHIEVEMENT_ID);
-    params.put("method", Param.SIGN_UP_METHOD);
-    params.put("item_category", Param.ITEM_CATEGORY);
-  }
 
   public FirebasePlugin() {
-    this.init();
   }
 
   public void onCreateApplication(Context applicationContext) {
@@ -159,31 +123,29 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
       Bundle bundle = new Bundle();
       JSONObject obj = new JSONObject(json);
       eventName = obj.getString("eventName");
-      boolean suggested = events.containsKey(eventName);
       JSONObject paramsObj = obj.getJSONObject("params");
       Iterator<String> iter = paramsObj.keys();
 
       while (iter.hasNext()) {
         String key = iter.next();
-        String fireKey = suggested ? params.get(key) : key;
 
         try {
-          if (Param.LEVEL.equals(fireKey) || Param.SCORE.equals(fireKey)) { //long
-            bundle.putLong(fireKey, paramsObj.getLong(fireKey));
-          } else if (Param.VALUE.equals(fireKey)) { //double
-            bundle.putDouble(fireKey, paramsObj.getDouble(fireKey));
+          if (Param.LEVEL.equals(key) || Param.SCORE.equals(key)) { //long
+            bundle.putLong(key, paramsObj.getLong(key));
+          } else if (Param.VALUE.equals(key)) { //double
+            bundle.putDouble(key, paramsObj.getDouble(key));
           } else {
-            bundle.putString(fireKey, paramsObj.getString(fireKey));
+            bundle.putString(key, paramsObj.getString(key));
           }
 
           // TODO: Need to implement using switch case. it suports for string from java 8 onwards.
-          //switch(fireKey) {
+          //switch(key) {
           //  case Param.LEVEL://long
           //  case Param.SCORE:
-          //    bundle.putLong(fireKey, paramsObj.getLong(fireKey));
+          //    bundle.putLong(key, paramsObj.getLong(key));
           //    break;
           //  case Param.VALUE: //double
-          //    bundle.putDouble(fireKey, paramsObj.getDouble(fireKey));
+          //    bundle.putDouble(key, paramsObj.getDouble(key));
           //    break;
           //  case Param.CHARACTER:
           //  case Param.GROUP_ID:
@@ -195,7 +157,7 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
           //  case Param.SIGN_UP_METHOD:
           //  case Param.ITEM_CATEGORY:
           //  default:
-          //    bundle.putString(fireKey, paramsObj.getString(fireKey));
+          //    bundle.putString(key, paramsObj.getString(key));
           //    break;
           //}
         } catch (JSONException e) {
@@ -203,7 +165,6 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
         }
       }
 
-      eventName = suggested ? events.get(eventName) : eventName;
       this.mFirebaseAnalytics.logEvent(eventName, bundle);
       logger.log("{firebase} track - success: " + eventName);
     } catch (JSONException e) {
