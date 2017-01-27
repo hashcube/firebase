@@ -66,7 +66,6 @@ var EVENTS = {
         params = _.pick(params, fire_events[e_name]);
       }
 
-      console.log('FIRLOG', e_name, JSON.stringify(params));
       NATIVE.plugins.sendEvent("FirebasePlugin", "logEvent", JSON.stringify({
         eventName: e_name,
         params: params || {}
