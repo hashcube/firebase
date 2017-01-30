@@ -42,26 +42,28 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
     try {
       this.mFirebaseAnalytics = FirebaseAnalytics.getInstance(activity);
 
-      GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(activity)
-        .enableAutoManage(activity, this)
-        .addApi(AppInvite.API)
-        .build();
+      if(!android.os.Build.MANUFACTURER.equals("Amazon")) {
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(activity)
+          .enableAutoManage(activity, this)
+          .addApi(AppInvite.API)
+          .build();
 
-      AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, activity, false)
-        .setResultCallback(
-          new ResultCallback<AppInviteInvitationResult>() {
-            @Override
-            public void onResult(AppInviteInvitationResult result) {
-              if (result.getStatus().isSuccess()) {
-                // Extract deep link from Intent
-                Intent intent = result.getInvitationIntent();
-                String deepLink = AppInviteReferral.getDeepLink(intent);
-                logger.log("{firebase} app launched from deeplink: " + deepLink);
-                // TODO: Can send events with url, Based on url,
-                // can do specific actions in game.
+        AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, activity, false)
+          .setResultCallback(
+            new ResultCallback<AppInviteInvitationResult>() {
+              @Override
+              public void onResult(AppInviteInvitationResult result) {
+                if (result.getStatus().isSuccess()) {
+                  // Extract deep link from Intent
+                  Intent intent = result.getInvitationIntent();
+                  String deepLink = AppInviteReferral.getDeepLink(intent);
+                  logger.log("{firebase} app launched from deeplink: " + deepLink);
+                  // TODO: Can send events with url, Based on url,
+                  // can do specific actions in game.
+                }
               }
-            }
-          });
+            });
+      }
     } catch (Exception ex) {
       logger.log("{firebase} init - failure: " + ex.getMessage());
     }
@@ -85,7 +87,7 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public void onRenderResume() {
-  } 
+  }
 
   public void setUserData(String json) {
     if (this.mFirebaseAnalytics == null) {
