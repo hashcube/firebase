@@ -58,15 +58,26 @@
   @try {
     NSString *eventName = [eventData valueForKey:@"eventName"];
     NSDictionary *evtParams = [eventData objectForKey:@"params"];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc]init];
 
     if (!evtParams || [evtParams count] <= 0) {
       [FIRAnalytics logEventWithName:eventName parameters:nil];
 
       NSLog(@"{firebase} Delivered event '%@'", eventName);
     } else {
-      [FIRAnalytics logEventWithName:eventName parameters:evtParams];
+      for (NSString* key in evtParams) {
+        if ([kFIRParameterLevel isEqualToString: key] || [kFIRParameterScore isEqualToString: key]) {
+          [params setObject: [NSNumber numberWithLongLong: [[evtParams objectForKey: key] longLongValue]] forKey: key];
+        } else if([kFIRParameterValue isEqualToString: key]) {
+          [params setObject: [NSNumber numberWithDouble: [[evtParams objectForKey: key] doubleValue]] forKey: key];
+        } else {
+          [params setObject: (NSString *)[evtParams objectForKey: key] forKey: key];
+        }
+      }
 
-      NSLog(@"{firebase} Delivered event '%@' with %d params", eventName, (int)[evtParams count]);
+      [FIRAnalytics logEventWithName:eventName parameters:params];
+
+      NSLog(@"{firebase} Delivered event '%@' with %d params", eventName, (int)[params count]);
     }
   } @catch (NSException *exception) {
     NSLog(@"{firebase} Exception while processing event: %@", exception);
