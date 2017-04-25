@@ -21,6 +21,8 @@
   @try {
     [FIRApp configure];
     NSLog(@"{firebase} initDone");
+    self.database = [FIRDatabase database];
+    NSLog(@"{firebase} DB init done");
   } @catch (NSException *exception) {
     NSLog(@"{firebase} Failed to initialize with exception: %@", exception);
   }
@@ -51,6 +53,79 @@
   } @catch (NSException *exception) {
     NSLog(@"{firebase} Exception on setting user property: %@", exception);
   } 
+}
+
+- (void) writeDatabase: (NSDictionary*) userData {
+    NSLog(@"{firebase} inside writeDatabase function");
+    
+    //[_database goOnline];
+    
+    @try {
+        NSString *accessToken = userData[@"accessToken"];
+        FIRAuthCredential *credential = [FIRFacebookAuthProvider
+                                         credentialWithAccessToken:accessToken];
+        
+        [[FIRAuth auth] signInWithCredential:credential
+                                  completion:^(FIRUser *user, NSError *error) {
+                                      
+                                      if (error) {
+                                          NSLog(@"{firebase} Auth error: %@", error);
+                                          return;
+                                      }
+                                      
+                                      NSString *userId = user.uid;
+                                      NSString *nodeName = userData[@"node"];
+                                      
+                                      FIRDatabaseReference *savegameRef = [[[_database reference] child:nodeName] child:userId];
+                                      
+                                      [userData[@"data"] enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL* stop) {
+                                          NSString *prop = (NSString *) key;
+                                          NSString *currValue = (NSString *) value;
+                                          
+                                          [[savegameRef child:prop] setValue:currValue ];
+                                      }];
+                                  }];
+        
+        
+    } @catch (NSException *exception) {
+        NSLog(@"{firebase} Exception on setting database property: %@", exception);
+    } @finally {
+        //[_database goOffline];
+    }
+}
+
+- (void) readDatabase: (NSDictionary*) userData {
+    NSLog(@"{firebase} inside readDatabase function");
+    
+    NSString *accessToken = userData[@"accessToken"];
+    FIRAuthCredential *credential = [FIRFacebookAuthProvider
+                                     credentialWithAccessToken:accessToken];
+    
+    [[FIRAuth auth] signInWithCredential:credential
+                              completion:^(FIRUser *user, NSError *error) {
+                                  
+                                  if (error) {
+                                      NSLog(@"{firebase} Auth error: %@", error);
+                                      return;
+                                  }
+                                  
+                                  NSString *userId = user.uid;
+                                  NSString *nodeName = userData[@"node"];
+                                  
+                                  FIRDatabaseReference *savegameRef = [[[_database reference] child:nodeName] child:userId];
+                                  
+                                  [savegameRef observeSingleEventOfType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+                                      NSLog(@"{firebase} read %@", snapshot.children.allObjects);
+                                      NSDictionary *result = snapshot.value;
+                                      
+                                      [[PluginManager get] dispatchJSEvent:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                            @"dataReady",@"name",
+                                                                            result, @"data",
+                                                                            nil]];
+                                  } withCancelBlock:^(NSError * _Nonnull error) {
+                                      NSLog(@"%@", error.localizedDescription);
+                                  }];
+                              }];
 }
 
 - (void) logEvent: (NSDictionary*) eventData {

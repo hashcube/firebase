@@ -8,11 +8,14 @@
     "FirebaseAnalytics.framework",
     "FirebaseCore.framework",
     "FirebaseInstanceID.framework",
+    "FirebaseAuth.framework",
+    "FirebaseDatabase.framework",
     "GoogleInterchangeUtilities.framework",
     "GoogleSymbolUtilities.framework",
-    "GoogleToolboxForMac.framework"
+    "GoogleToolboxForMac.framework",
+    "GTMSessionFetcher.framework"
   ],
   "additionalLinkerFlags": [
-    "-ObjC"
+    "-ObjC -licucore"
   ]
 }

@@ -83,6 +83,21 @@ static NSString *const kFIREventAppOpen = @"app_open";
 /// </ul>
 static NSString *const kFIREventBeginCheckout = @"begin_checkout";
 
+/// Campaign Detail event. Log this event to supply the referral details of a re-engagement
+/// campaign. Note: you must supply at least one of the required parameters kFIRParameterSource,
+/// kFIRParameterMedium or kFIRParameterCampaign. Params:
+///
+/// <ul>
+///     <li>@c kFIRParameterSource (NSString)</li>
+///     <li>@c kFIRParameterMedium (NSString)</li>
+///     <li>@c kFIRParameterCampaign (NSString)</li>
+///     <li>@c kFIRParameterTerm (NSString) (optional)</li>
+///     <li>@c kFIRParameterContent (NSString) (optional)</li>
+///     <li>@c kFIRParameterAdNetworkClickID (NSString) (optional)</li>
+///     <li>@c kFIRParameterCP1 (NSString) (optional)</li>
+/// </ul>
+static NSString *const kFIREventCampaignDetails = @"campaign_details";
+
 /// Earn Virtual Currency event. This event tracks the awarding of virtual currency in your app. Log
 /// this along with @c kFIREventSpendVirtualCurrency to better understand your virtual economy.
 /// Params:
