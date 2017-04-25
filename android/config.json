@@ -1,11 +1,18 @@
 {
   "copyFiles": [
-    "FirebasePlugin.java"
+    "app/src/main/java/com/tealeaf/plugin/plugins/FirebasePlugin.java"
   ],
   "jars": [
-    "libs/hc-firebase-1.0.jar",
-    "libs/gms-invites.jar",
-    "libs/gms-tasks-10.0.1.jar"
+    "app/libs/firebase-analytics-10.0.1.jar",
+    "app/libs/firebase-analytics-impl-10.0.1.jar",
+    "app/libs/firebase-auth-10.0.1.jar",
+    "app/libs/firebase-common-10.0.1.jar",
+    "app/libs/firebase-core-10.0.1.jar",
+    "app/libs/firebase-database-10.0.1.jar",
+    "app/libs/firebase-database-connection-10.0.1.jar",
+    "app/libs/firebase-iid-10.0.1.jar",
+    "app/libs/play-services-tasks-10.0.1.jar",
+    "app/libs/play-services-appinvite-10.0.1.jar"
   ],
   "injectionXML": "manifest.xml",
   "injectionXSL": "manifest.xsl"
