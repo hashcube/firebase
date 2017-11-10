@@ -1,14 +1,19 @@
 #import <Foundation/Foundation.h>
 
+#import "FIRCoreSwiftNameSupport.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * This class provides configuration fields for Firebase Analytics.
  */
+FIR_SWIFT_NAME(AnalyticsConfiguration)
 @interface FIRAnalyticsConfiguration : NSObject
 
 /**
  * Returns the shared instance of FIRAnalyticsConfiguration.
  */
-+ (FIRAnalyticsConfiguration *)sharedInstance;
++ (FIRAnalyticsConfiguration *)sharedInstance FIR_SWIFT_NAME(shared());
 
 /**
  * Sets the minimum engagement time in seconds required to start a new session. The default value
@@ -28,11 +33,6 @@
  */
 - (void)setAnalyticsCollectionEnabled:(BOOL)analyticsCollectionEnabled;
 
-/**
- * Deprecated. Sets whether measurement and reporting are enabled for this app on this device. By
- * default they are enabled.
- */
-- (void)setIsEnabled:(BOOL)isEnabled
-    DEPRECATED_MSG_ATTRIBUTE("Use setAnalyticsCollectionEnabled: instead.");
-
 @end
+
+NS_ASSUME_NONNULL_END
