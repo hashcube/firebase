@@ -7,7 +7,10 @@
   "frameworks": [
     "FirebaseAnalytics.framework",
     "FirebaseCore.framework",
+    "FirebaseCoreDiagnostics.framework",
+    "FirebaseNanoPB.framework",
     "FirebaseInstanceID.framework",
+    "nanopb.framework",
     "GoogleInterchangeUtilities.framework",
     "GoogleSymbolUtilities.framework",
     "GoogleToolboxForMac.framework"
