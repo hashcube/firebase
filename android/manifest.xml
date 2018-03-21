@@ -9,13 +9,22 @@
 <!--END_PLUGINS_MANIFEST-->
 <!--START_PLUGINS_APPLICATION-->
 <!-- Firebase -->
-<receiver android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementReceiver"/>
+<service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementService"/>
+<receiver android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementReceiver">
+    <intent-filter>
+         <action android:name="com.google.android.gms.measurement.UPLOAD" />
+         <action android:name="com.android.vending.INSTALL_REFERRER"/>
+     </intent-filter>
+</receiver>
+<service android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+        android:enabled="true"
+        android:exported="false"
+        android:permission="android.permission.BIND_JOB_SERVICE" />
 <receiver android:enabled="true" android:name="com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" android:permission="android.permission.INSTALL_PACKAGES">
     <intent-filter>
         <action android:name="com.android.vending.INSTALL_REFERRER"/>
     </intent-filter>
 </receiver>
-<service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementService"/>
 <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
 <provider android:authorities="packageNameFirebaseProvider" android:exported="false" android:initOrder="100" android:name="com.google.firebase.provider.FirebaseInitProvider"/>
 <receiver android:exported="true" android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:permission="com.google.android.c2dm.permission.SEND">
@@ -25,11 +34,5 @@
         <category android:name="packageName"/>
     </intent-filter>
 </receiver>
-<receiver android:exported="false" android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver"/>
-<service android:exported="true" android:name="com.google.firebase.iid.FirebaseInstanceIdService">
-    <intent-filter android:priority="-500">
-        <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-    </intent-filter>
-</service>
 <!--END_PLUGINS_APPLICATION-->
 
