@@ -22,7 +22,6 @@ import com.google.android.gms.appinvite.AppInviteReferral;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.measurement.AppMeasurement;
 
 
 public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFailedListener {
@@ -42,8 +41,6 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
     this._activity = activity;
     try {
       this.mFirebaseAnalytics = FirebaseAnalytics.getInstance(activity);
-
-      mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
       if(!android.os.Build.MANUFACTURER.equals("Amazon")) {
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(activity)
