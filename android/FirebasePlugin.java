@@ -2,6 +2,7 @@ package com.tealeaf.plugin.plugins;
 
 import com.tealeaf.logger;
 import com.tealeaf.TeaLeaf;
+import com.tealeaf.EventQueue;
 import com.tealeaf.plugin.IPlugin;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import java.util.Iterator;
 
 import android.support.v4.app.FragmentActivity;
+import android.content.pm.ApplicationInfo;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.analytics.FirebaseAnalytics.Event;
@@ -23,10 +25,31 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
+import android.support.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFailedListener {
   private FirebaseAnalytics mFirebaseAnalytics;
   private FragmentActivity _activity;
+  private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
+  public class ConfigValue extends com.tealeaf.event.Event {
+    String value;
+
+    public ConfigValue(String value) {
+      super("ConfigValue");
+      this.value = value;
+    }
+  }
 
   public FirebasePlugin() {
   }
@@ -48,6 +71,13 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
           .addApi(AppInvite.API)
           .build();
 
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(isDebuggable())
+                .build();
+        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+
         AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, activity, false)
           .setResultCallback(
             new ResultCallback<AppInviteInvitationResult>() {
@@ -63,6 +93,7 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
                 }
               }
             });
+        fetchConfig();
       }
     } catch (Exception ex) {
       logger.log("{firebase} init - failure: " + ex.getMessage());
@@ -87,6 +118,64 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public void onRenderResume() {
+  }
+
+  private boolean isDebuggable() {
+    return 0 != (_activity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE);
+  }
+
+  public void fetchConfig() {
+    long cacheExpiration = 3600; // 1 hour in seconds.
+    // If your app is using developer mode, cacheExpiration is set to 0, so each fetch will
+    // retrieve values from the service.
+    if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+        cacheExpiration = 0;
+    }
+
+    // [START fetch_config_with_callback]
+    // cacheExpirationSeconds is set to cacheExpiration here, indicating the next fetch request
+    // will use fetch data from the Remote Config service, rather than cached parameter values,
+    // if cached parameter values are more than cacheExpiration seconds old.
+    // See Best Practices in the README for more information.
+    mFirebaseRemoteConfig.fetch(cacheExpiration)
+      .addOnCompleteListener(this._activity, new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+          if (task.isSuccessful()) {
+              mFirebaseRemoteConfig.activateFetched();
+          } else {
+            logger.log("{firebase} fetchConfig - failure");
+          }
+        }
+      });
+    // [END fetch_config_with_callback]
+  }
+
+  public void setDefaultConfigValues(String config) {
+    try {
+      JSONObject obj = new JSONObject(config);
+      Map<String, Object> map = new HashMap<String, Object>();
+      Iterator<String> iter = obj.keys();
+
+      while (iter.hasNext()) {
+        String key = iter.next();
+        String value = obj.getString(key);
+
+        map.put(key, value);
+      }
+
+      mFirebaseRemoteConfig.setDefaults(map);
+
+    } catch (JSONException e) {
+      logger.log("{firebase} setDefaultConfigValues - failure: " + e.getMessage());
+    }
+  }
+
+  public void getConfig(String key) {
+    String value = mFirebaseRemoteConfig.getString(key);
+    if (value != null) {
+      EventQueue.pushEvent(new ConfigValue(value));
+    }
   }
 
   public void setUserData(String json) {

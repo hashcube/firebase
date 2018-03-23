@@ -31,7 +31,8 @@ var EVENTS = {
   FireBase = Class(function () {
     "use strict";
 
-    var fire_events = {};
+    var fire_events = {},
+      cb_get_config;
 
     this.init = function() {
       fire_events[EVENTS.JOIN_GROUP] = [PARAMS.GROUP_ID];
@@ -46,6 +47,12 @@ var EVENTS = {
       fire_events[EVENTS.SIGN_UP] = [PARAMS.SIGN_UP_METHOD];
       fire_events[EVENTS.PRESENT_OFFER] = [PARAMS.ITEM_ID, PARAMS.ITEM_NAME, PARAMS.ITEM_CATEGORY];
       fire_events[EVENTS.LOGIN] = [];
+
+      NATIVE.events.registerHandler('ConfigValue', function (info) {
+        if (cb_get_config) {
+          cb_get_config.apply(null, [info.value]);
+        }
+      });
     };
 
     this.setUserId = function (uid) {
@@ -76,6 +83,15 @@ var EVENTS = {
       NATIVE.plugins.sendEvent("FirebasePlugin", "setScreen", JSON.stringify({
         name: name
       }));
+    };
+
+    this.setDefaultConfigValues = function (values) {
+      NATIVE.plugins.sendEvent("FirebasePlugin", "setDefaultConfigValues", JSON.stringify(values));
+    };
+
+    this.getConfig = function (key, cb) {
+      cb_get_config = cb;
+      NATIVE.plugins.sendEvent("FirebasePlugin", "getConfig", key);
     };
 });
 
