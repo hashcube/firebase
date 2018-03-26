@@ -284,8 +284,16 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
     }
 
     try {
+      final Activity current_activity = this._activity;
+      final FirebaseAnalytics _mFirebaseAnalytics = this.mFirebaseAnalytics;
       JSONObject obj = new JSONObject(screenData);
-      this.mFirebaseAnalytics.setCurrentScreen(this._activity, obj.getString("name"), "");
+      final String screeen_name = obj.getString("name");
+      current_activity.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+           _mFirebaseAnalytics.setCurrentScreen(current_activity, screeen_name, null);
+        }
+      });
     } catch (JSONException ex) {
       logger.log("{firebase} set screen - failure: " + ex.getMessage());
     }
