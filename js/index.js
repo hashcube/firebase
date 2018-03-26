@@ -31,7 +31,8 @@ var EVENTS = {
   FireBase = Class(function () {
     "use strict";
 
-    var fire_events = {};
+    var fire_events = {},
+      cb_on_fetch;
 
     this.init = function() {
       fire_events[EVENTS.JOIN_GROUP] = [PARAMS.GROUP_ID];
@@ -46,6 +47,12 @@ var EVENTS = {
       fire_events[EVENTS.SIGN_UP] = [PARAMS.SIGN_UP_METHOD];
       fire_events[EVENTS.PRESENT_OFFER] = [PARAMS.ITEM_ID, PARAMS.ITEM_NAME, PARAMS.ITEM_CATEGORY];
       fire_events[EVENTS.LOGIN] = [];
+
+      NATIVE.events.registerHandler('ConfigValue', function (info) {
+        if (cb_on_fetch) {
+          cb_on_fetch.apply(null, [info.data]);
+        }
+      });
     };
 
     this.setUserId = function (uid) {
@@ -76,6 +83,11 @@ var EVENTS = {
       NATIVE.plugins.sendEvent("FirebasePlugin", "setScreen", JSON.stringify({
         name: name
       }));
+    };
+
+    this.initAbTesting = function (config, cb) {
+      cb_on_fetch = cb;
+      NATIVE.plugins.sendEvent("FirebasePlugin", "initAbTesting", JSON.stringify(config));
     };
 });
 
