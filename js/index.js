@@ -32,7 +32,7 @@ var EVENTS = {
     "use strict";
 
     var fire_events = {},
-      cb_get_config;
+      cb_on_fetch;
 
     this.init = function() {
       fire_events[EVENTS.JOIN_GROUP] = [PARAMS.GROUP_ID];
@@ -49,8 +49,8 @@ var EVENTS = {
       fire_events[EVENTS.LOGIN] = [];
 
       NATIVE.events.registerHandler('ConfigValue', function (info) {
-        if (cb_get_config) {
-          cb_get_config.apply(null, [info.value]);
+        if (cb_on_fetch) {
+          cb_on_fetch.apply(null, [info.data]);
         }
       });
     };
@@ -85,13 +85,9 @@ var EVENTS = {
       }));
     };
 
-    this.setDefaultConfigValues = function (values) {
-      NATIVE.plugins.sendEvent("FirebasePlugin", "setDefaultConfigValues", JSON.stringify(values));
-    };
-
-    this.getConfig = function (key, cb) {
-      cb_get_config = cb;
-      NATIVE.plugins.sendEvent("FirebasePlugin", "getConfig", key);
+    this.initAbTesting = function (config, cb) {
+      cb_on_fetch = cb;
+      NATIVE.plugins.sendEvent("FirebasePlugin", "initAbTesting", JSON.stringify(config));
     };
 });
 

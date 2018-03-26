@@ -43,11 +43,11 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
   public class ConfigValue extends com.tealeaf.event.Event {
-    String value;
+    Map<String, String> data;
 
-    public ConfigValue(String value) {
+    public ConfigValue(Map<String, String> data) {
       super("ConfigValue");
-      this.value = value;
+      this.data = data;
     }
   }
 
@@ -93,7 +93,6 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
                 }
               }
             });
-        fetchConfig();
       }
     } catch (Exception ex) {
       logger.log("{firebase} init - failure: " + ex.getMessage());
@@ -124,7 +123,7 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
     return 0 != (_activity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE);
   }
 
-  public void fetchConfig() {
+  private void fetchConfig(final JSONObject obj) {
     long cacheExpiration = 3600; // 1 hour in seconds.
     // If your app is using developer mode, cacheExpiration is set to 0, so each fetch will
     // retrieve values from the service.
@@ -142,7 +141,8 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
         @Override
         public void onComplete(@NonNull Task<Void> task) {
           if (task.isSuccessful()) {
-              mFirebaseRemoteConfig.activateFetched();
+            mFirebaseRemoteConfig.activateFetched();
+            getConfig(obj);
           } else {
             logger.log("{firebase} fetchConfig - failure");
           }
@@ -151,9 +151,19 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
     // [END fetch_config_with_callback]
   }
 
-  public void setDefaultConfigValues(String config) {
+  public void initAbTesting(String config) {
     try {
       JSONObject obj = new JSONObject(config);
+
+      setDefaultConfigValues(obj);
+      fetchConfig(obj);
+    } catch (JSONException e) {
+      logger.log("{firebase} initAbTesting - failure: " + e.getMessage());
+    }
+  }
+
+  private void setDefaultConfigValues(JSONObject obj) {
+    try {
       Map<String, Object> map = new HashMap<String, Object>();
       Iterator<String> iter = obj.keys();
 
@@ -165,17 +175,22 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
       }
 
       mFirebaseRemoteConfig.setDefaults(map);
-
     } catch (JSONException e) {
-      logger.log("{firebase} setDefaultConfigValues - failure: " + e.getMessage());
+      logger.log("{firebase} initAbTesting - failure: " + e.getMessage());
     }
   }
 
-  public void getConfig(String key) {
-    String value = mFirebaseRemoteConfig.getString(key);
-    if (value != null) {
-      EventQueue.pushEvent(new ConfigValue(value));
+  private void getConfig(JSONObject obj) {
+    String value;
+    Map<String, String> map = new HashMap<String, String>();
+    Iterator<String> iter = obj.keys();
+
+    while (iter.hasNext()) {
+      String key = iter.next();
+      value = mFirebaseRemoteConfig.getString(key);
+      map.put(key, value);
     }
+    EventQueue.pushEvent(new ConfigValue(map));
   }
 
   public void setUserData(String json) {
