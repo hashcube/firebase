@@ -10,9 +10,10 @@
     "FirebaseNanoPB.framework",
     "FirebaseInstanceID.framework",
     "nanopb.framework",
-    "GoogleInterchangeUtilities.framework",
-    "GoogleSymbolUtilities.framework",
-    "GoogleToolboxForMac.framework"
+    "GoogleToolboxForMac.framework",
+    "FirebaseABTesting.framework",
+    "FirebaseRemoteConfig.framework",
+    "Protobuf.framework"
   ],
   "additionalLinkerFlags": [
     "-ObjC"
