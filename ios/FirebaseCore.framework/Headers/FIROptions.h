@@ -1,25 +1,40 @@
-#import <Foundation/Foundation.h>
+/*
+ * Copyright 2017 Google
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-#import "FIRCoreSwiftNameSupport.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
  * This class provides constant fields of Google APIs.
  */
-FIR_SWIFT_NAME(FirebaseOptions)
+NS_SWIFT_NAME(FirebaseOptions)
 @interface FIROptions : NSObject <NSCopying>
 
 /**
- * Returns the default options.
+ * Returns the default options. The first time this is called it synchronously reads
+ * GoogleService-Info.plist from disk.
  */
-+ (nullable FIROptions *)defaultOptions FIR_SWIFT_NAME(defaultOptions());
++ (nullable FIROptions *)defaultOptions NS_SWIFT_NAME(defaultOptions());
 
 /**
  * An iOS API key used for authenticating requests from your app, e.g.
  * @"AIzaSyDdVgKwhZl0sTTTLZ7iTmt1r3N2cJLnaDk", used to identify your app to Google servers.
  */
-@property(nonatomic, copy, nullable) NSString *APIKey FIR_SWIFT_NAME(apiKey);
+@property(nonatomic, copy, nullable) NSString *APIKey NS_SWIFT_NAME(apiKey);
 
 /**
  * The bundle ID for the application. Defaults to `[[NSBundle mainBundle] bundleID]` when not set
@@ -42,7 +57,7 @@ FIR_SWIFT_NAME(FirebaseOptions)
  * The Project Number from the Google Developer's console, for example @"012345678901", used to
  * configure Google Cloud Messaging.
  */
-@property(nonatomic, copy) NSString *GCMSenderID FIR_SWIFT_NAME(gcmSenderID);
+@property(nonatomic, copy) NSString *GCMSenderID NS_SWIFT_NAME(gcmSenderID);
 
 /**
  * The Project ID from the Firebase console, for example @"abc-xyz-123".
@@ -95,7 +110,8 @@ FIR_SWIFT_NAME(FirebaseOptions)
         "setters instead.");
 
 /**
- * Initializes a customized instance of FIROptions from the file at the given plist file path.
+ * Initializes a customized instance of FIROptions from the file at the given plist file path. This
+ * will read the file synchronously from disk.
  * For example,
  * NSString *filePath =
  *     [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
@@ -111,7 +127,7 @@ FIR_SWIFT_NAME(FirebaseOptions)
 // clang-format off
 - (instancetype)initWithGoogleAppID:(NSString *)googleAppID
                         GCMSenderID:(NSString *)GCMSenderID
-    FIR_SWIFT_NAME(init(googleAppID:gcmSenderID:));
+    NS_SWIFT_NAME(init(googleAppID:gcmSenderID:));
 // clang-format on
 
 @end

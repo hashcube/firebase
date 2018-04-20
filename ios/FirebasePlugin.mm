@@ -1,6 +1,9 @@
 #import "FirebasePlugin.h"
 #import "Firebase.h"
 
+// Change this valus to YES to debug remote config
+static BOOL is_debug = NO;
+
 @implementation FirebasePlugin
 
 // The plugin must call super dealloc.
@@ -20,6 +23,11 @@
 - (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
   @try {
     [FIRApp configure];
+
+    self.remoteConfig = [FIRRemoteConfig remoteConfig];
+    FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] initWithDeveloperModeEnabled:is_debug];
+    self.remoteConfig.configSettings = remoteConfigSettings;
+
     NSLog(@"{firebase} initDone");
   } @catch (NSException *exception) {
     NSLog(@"{firebase} Failed to initialize with exception: %@", exception);
@@ -32,6 +40,67 @@
   }
   @catch (NSException *exception) {
     NSLOG(@"{firebase} Exception while logging appopen event: %@", exception);
+  }
+}
+
+- (void) initAbTesting: (NSDictionary*) config {
+  NSLog(@"{firebase} initAbTesting");
+  @try {
+    [self setDefaultConfigValues:config];
+    [self fetchConfig:config];
+  } @catch (NSException *exception) {
+    NSLog(@"{firebase} InitAbtesting failed: %@", exception);
+  }
+}
+
+- (void) setDefaultConfigValues: (NSDictionary*) config {
+  @try {
+    NSLog(@"{firebase} setting default config");
+    [self.remoteConfig setDefaults:config];
+  } @catch (NSException *exception) {
+    NSLog(@"{firebase} Unable to set default config: %@", exception);
+  }
+}
+
+- (void) fetchConfig: (NSDictionary*) config {
+  NSLog(@"{firebase} fetching latest config values from firebase");
+  @try {
+    int cacheExpiration = 3600;
+    if (is_debug) {
+      cacheExpiration = 0;
+    }
+    [self.remoteConfig fetchWithExpirationDuration:cacheExpiration completionHandler:^(FIRRemoteConfigFetchStatus status, NSError *error) {
+      if (status == FIRRemoteConfigFetchStatusSuccess) {
+        NSLog(@"{firebase} Config fetched!");
+        [self.remoteConfig activateFetched];
+        [self getConfig: config];
+      } else {
+        NSLog(@"{firebase} Config not fetched");
+        NSLog(@"{firebase} Error %@", error.localizedDescription);
+      }
+   }];
+  } @catch (NSException *exception) {
+    NSLog(@"{firebase} Fetch config failed: %@", exception);
+  }
+}
+
+- (void) getConfig: (NSDictionary*) items {
+  NSLog(@"{firebase} getting config values from firebase");
+  @try {
+    NSMutableDictionary *results = [[NSMutableDictionary alloc] init];
+
+    for (NSString* key in items) {
+      NSString* value = self.remoteConfig[key].stringValue;
+      [results setObject:value forKey:key];
+    }
+
+    [[PluginManager get] dispatchJSEvent:[NSDictionary dictionaryWithObjectsAndKeys:
+                                          @"ConfigValue", @"name",
+                                          results, @"data",
+                                          nil]];
+    return;
+  } @catch (NSException *exception) {
+    NSLog(@"{firebase} Unable to get config values: %@", exception);
   }
 }
 
