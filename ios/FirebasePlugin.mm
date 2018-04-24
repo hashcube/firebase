@@ -73,11 +73,12 @@ static BOOL is_debug = NO;
       if (status == FIRRemoteConfigFetchStatusSuccess) {
         NSLog(@"{firebase} Config fetched!");
         [self.remoteConfig activateFetched];
-        [self getConfig: config];
       } else {
         NSLog(@"{firebase} Config not fetched");
         NSLog(@"{firebase} Error %@", error.localizedDescription);
       }
+
+      [self getConfig: config];
    }];
   } @catch (NSException *exception) {
     NSLog(@"{firebase} Fetch config failed: %@", exception);
