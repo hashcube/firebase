@@ -141,7 +141,6 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
         @Override
         public void onComplete(@NonNull Task<Void> task) {
           if (task.isSuccessful()) {
-            _activity.reportFullyDrawn();
             mFirebaseRemoteConfig.activateFetched();
           } else {
             logger.log("{firebase} fetchConfig - failure");
