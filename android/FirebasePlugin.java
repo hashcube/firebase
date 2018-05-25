@@ -36,11 +36,16 @@ import android.support.annotation.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.perf.metrics.Trace;
+
 
 public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFailedListener {
   private FirebaseAnalytics mFirebaseAnalytics;
   private FragmentActivity _activity;
   private FirebaseRemoteConfig mFirebaseRemoteConfig;
+  private Trace trace;
 
   public class ConfigValue extends com.tealeaf.event.Event {
     Map<String, String> data;
@@ -327,5 +332,19 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
 
   @Override
   public void onConnectionFailed(ConnectionResult connectionResult) {
+  }
+
+  public void startTrace(String trace_id) {
+    logger.log("{FirebasePerformance} startTrace:" + trace_id);
+    this.trace = FirebasePerformance.getInstance().newTrace(trace_id);
+    this.trace.start();
+  }
+
+  public void stopTrace() {
+    logger.log("{FirebasePerformance} stopTrace:");
+    if (this.trace != null) {
+      this.trace.stop();
+      this.trace = null;
+    }
   }
 }
