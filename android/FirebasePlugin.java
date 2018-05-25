@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.firebase.perf.FirebasePerformance;
-import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.perf.metrics.Trace;
 
 
