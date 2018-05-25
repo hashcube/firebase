@@ -309,6 +309,7 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public void onStop() {
+    stopTrace();
   }
 
   public void onDestroy() {
@@ -335,13 +336,11 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public void startTrace(String trace_id) {
-    logger.log("{FirebasePerformance} startTrace:" + trace_id);
     this.trace = FirebasePerformance.getInstance().newTrace(trace_id);
     this.trace.start();
   }
 
-  public void stopTrace() {
-    logger.log("{FirebasePerformance} stopTrace:");
+  public void stopTrace(String dummy) {
     if (this.trace != null) {
       this.trace.stop();
       this.trace = null;

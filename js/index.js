@@ -95,7 +95,7 @@ var EVENTS = {
     };
 
     this.stopTrace = function () {
-      NATIVE.plugins.sendEvent("FirebasePlugin", "stopTrace");
+      NATIVE.plugins.sendEvent("FirebasePlugin", "stopTrace", "");
     };
 });
 
