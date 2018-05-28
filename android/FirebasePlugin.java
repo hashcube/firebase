@@ -308,7 +308,7 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public void onStop() {
-    stopTrace();
+    stopTrace("dummy");
   }
 
   public void onDestroy() {
