@@ -89,6 +89,14 @@ var EVENTS = {
       cb_on_fetch = cb;
       NATIVE.plugins.sendEvent("FirebasePlugin", "initAbTesting", JSON.stringify(config));
     };
+
+    this.startTrace = function (trace_id) {
+      NATIVE.plugins.sendEvent("FirebasePlugin", "startTrace", trace_id);
+    };
+
+    this.stopTrace = function () {
+      NATIVE.plugins.sendEvent("FirebasePlugin", "stopTrace", "");
+    };
 });
 
 exports = new FireBase();
