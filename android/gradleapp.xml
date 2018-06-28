@@ -1,6 +1,4 @@
 //<!--START_PLUGINS_DEPENDENCIES-->
-	//<!--Crashlytics Dependencies-->
-      api('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
-        transitive = true;
-    }
+	//<!--Firebase Dependencies-->
+     implementation 'com.google.firebase:firebase-perf:16.0.0'
 //<!--END_PLUGINS_DEPENDENCIES-->
