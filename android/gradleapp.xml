@@ -1,0 +1,6 @@
+//<!--START_PLUGINS_DEPENDENCIES-->
+	//<!--Crashlytics Dependencies-->
+      api('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+        transitive = true;
+    }
+//<!--END_PLUGINS_DEPENDENCIES-->
