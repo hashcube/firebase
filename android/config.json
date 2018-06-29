@@ -6,6 +6,6 @@
   "injectionXSL": "manifest.xsl",
   "injectionAppModuleGradleAndroidPluginsGradleXML": "gradlepluginsapp.xml",
   "injectionGradleClasspathXML": "gradleclasspath.xml",
-  "injectionAppModuleGradleXML": "gradleapp.xml",
+  "injectionTealeafModuleGradleXML": "gradletealeaf.xml",
   "injectionTealeafModulePluginsCustomSettingsGradleXML": "gradletealeafpluginscustomesettings.xml"
 }
