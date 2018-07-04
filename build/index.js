@@ -66,7 +66,12 @@ exports.onCreateProject = function (api, app, config, cb) {
         currStrDom.val = googleConf[attrName];
       }
     }
-    return fs.outputFileAsync(path.join(androidProjectPath, 'res/values', strings_file), xmlStr.toString(), 'utf-8');
+      return fs.outputFileAsync(path.join(androidProjectPath,'../../',
+          app.manifest.shortName,
+          "tealeaf/src/main",
+          'res/values',
+          strings_file),
+          xmlStr.toString(), 'utf-8');
   }
 
   return Promise.resolve(true);
