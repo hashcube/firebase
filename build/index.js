@@ -36,7 +36,7 @@ exports.onBeforeBuild = function (api, app, config, cb) {
   } else if (config.target == 'native-android' && firebase.android) {
 
       // copy google-services.json from manifest config string `google_services_file`
-      var googleServicesJsonFile = path.join(app_path, app.manifest.google_services_file);
+      var googleServicesJsonFile = path.join(app_path, app.manifest.android.google_services_file);
       fs.copy(googleServicesJsonFile,
           path.join(app_path, "build",app.manifest.shortName, "app", "google-services.json"));
 
