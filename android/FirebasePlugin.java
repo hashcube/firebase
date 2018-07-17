@@ -31,6 +31,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import android.support.annotation.NonNull;
 
 import java.util.HashMap;
@@ -175,6 +177,11 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
       while (iter.hasNext()) {
         String key = iter.next();
         String value = obj.getString(key);
+
+        if (key.equals("firebase_instance_id")) {
+          map.put(key, FirebaseInstanceId.getInstance().getId());
+          continue;
+        }
 
         map.put(key, value);
       }
