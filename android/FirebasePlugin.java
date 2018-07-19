@@ -57,6 +57,15 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
     }
   }
 
+  public class UserProperties extends com.tealeaf.event.Event {
+    Map<String, String> data;
+
+    public UserProperties(Map<String, String> data) {
+      super("UserProperties");
+      this.data = data;
+    }
+  }
+
   public FirebasePlugin() {
   }
 
@@ -178,11 +187,6 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
         String key = iter.next();
         String value = obj.getString(key);
 
-        if (key.equals("firebase_instance_id")) {
-          map.put(key, FirebaseInstanceId.getInstance().getId());
-          continue;
-        }
-
         map.put(key, value);
       }
 
@@ -206,6 +210,13 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public void setUserData(String json) {
+    if (json.equals("\"\"")) {
+      Map<String, String> map = new HashMap<String, String>();
+      map.put("firebase_instance_id", FirebaseInstanceId.getInstance().getId());
+      EventQueue.pushEvent(new UserProperties(map));
+      return;
+    }
+
     if (this.mFirebaseAnalytics == null) {
       return;
     }
