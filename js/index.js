@@ -53,6 +53,11 @@ var EVENTS = {
           cb_on_fetch.apply(null, [info.data]);
         }
       });
+      NATIVE.events.registerHandler('UserProperties', function (info) {
+        if (cb_on_fetch) {
+          cb_on_fetch.apply(null, [info.data]);
+        }
+      });
     };
 
     this.setUserId = function (uid) {
@@ -61,8 +66,10 @@ var EVENTS = {
       });
     };
 
-    this.setUserData = function (data) {
+    this.setUserData = function (data, cb) {
       if (!data) {
+        cb_on_fetch = cb;
+        NATIVE.plugins.sendEvent("FirebasePlugin", "setUserData", JSON.stringify(data));
         return;
       }
       NATIVE.plugins.sendEvent("FirebasePlugin", "setUserData", JSON.stringify(data));
@@ -86,7 +93,7 @@ var EVENTS = {
     };
 
     this.initAbTesting = function (config, cb) {
-      cb_on_fetch = cb;
+      cb_on_fetch = cb ;
       NATIVE.plugins.sendEvent("FirebasePlugin", "initAbTesting", JSON.stringify(config));
     };
 
