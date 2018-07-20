@@ -32,7 +32,8 @@ var EVENTS = {
     "use strict";
 
     var fire_events = {},
-      cb_on_fetch;
+      cb_on_fetch,
+      cb_on_fetch_prop;
 
     this.init = function() {
       fire_events[EVENTS.JOIN_GROUP] = [PARAMS.GROUP_ID];
@@ -54,8 +55,8 @@ var EVENTS = {
         }
       });
       NATIVE.events.registerHandler('UserProperties', function (info) {
-        if (cb_on_fetch) {
-          cb_on_fetch.apply(null, [info.data]);
+        if (cb_on_fetch_prop) {
+          cb_on_fetch_prop.apply(null, [info.data]);
         }
       });
     };
@@ -68,7 +69,7 @@ var EVENTS = {
 
     this.setUserData = function (data, cb) {
       if (!data) {
-        cb_on_fetch = cb;
+        cb_on_fetch_prop = cb;
         NATIVE.plugins.sendEvent("FirebasePlugin", "setUserData", JSON.stringify(data));
         return;
       }
