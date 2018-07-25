@@ -24,7 +24,7 @@
     </intent-filter>
 </receiver>
 
-<provider android:authorities="packageNameFirebaseProvider" android:exported="false" android:initOrder="100" android:name="com.google.firebase.provider.FirebaseInitProvider"/>
+<provider tools:replace="android:authorities" android:authorities="packageNameFirebaseProvider" android:exported="false" android:initOrder="100" android:name="com.google.firebase.provider.FirebaseInitProvider"/>
 <receiver android:exported="true" android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:permission="com.google.android.c2dm.permission.SEND">
     <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE"/>

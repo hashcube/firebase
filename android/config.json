@@ -2,13 +2,9 @@
   "copyFiles": [
     "FirebasePlugin.java"
   ],
-  "jars": [
-    "libs/hc-firebase-2.0.jar",
-    "libs/gms-invites.jar",
-    "libs/gms-tasks-11.8.0.jar",
-    "libs/support-annotations-25.1.0.jar",
-    "libs/firebase-perfomance.jar"
-  ],
   "injectionXML": "manifest.xml",
-  "injectionXSL": "manifest.xsl"
+  "injectionXSL": "manifest.xsl",
+  "injectionAppGradleXML": "gradleapp.xml",
+  "injectionGradleClasspathXML": "gradleclasspath.xml",
+  "injectionTealeafModuleGradleXML": "gradletealeaf.xml"
 }

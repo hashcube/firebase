@@ -5,11 +5,11 @@ var path = require('path'),
   xcodeUtil = require('../../devkit-core/modules/native-ios/lib/xcodeUtil'),
   copyFile = Promise.promisify(fs.copy);
 
-exports.onCreateProject = function (api, app, config, cb) {
+exports.onBeforeBuild = function (api, app, config, cb) {
   var firebase = app.manifest.addons.firebase || {},
     app_path = app.paths.root,
     xcodeProjectPath = config.xcodeProjectPath,
-    androidProjectPath = config.outputPath,
+    outputPath = config.outputPath,
     plist_file = 'GoogleService-Info.plist',
     strings_file = 'firebase_strings.xml',
     addPlist = function () {
@@ -34,10 +34,18 @@ exports.onCreateProject = function (api, app, config, cb) {
       .then(addPlist)
       .then(cb);
   } else if (config.target == 'native-android' && firebase.android) {
+
+      // copy google-services.json from manifest config string `google_services_file`
+      var googleServicesJsonFile = path.join(app_path, app.manifest.android.google_services_file);
+      fs.copy(googleServicesJsonFile,
+          path.join(app_path, "build",app.manifest.shortName, "app", "google-services.json"));
+
+
     srcFile = path.join(app_path, firebase.android);
     googleConf = require(srcFile);
     clientConfig = googleConf.client[0];
     projectInfo = googleConf.project_info;
+
     googleConf = {
       default_web_client_id: clientConfig.oauth_client[0].client_id,
       firebase_database_url: projectInfo.firebase_url,
@@ -58,8 +66,12 @@ exports.onCreateProject = function (api, app, config, cb) {
         currStrDom.val = googleConf[attrName];
       }
     }
-
-    return fs.outputFileAsync(path.join(androidProjectPath, 'res/values', strings_file), xmlStr.toString(), 'utf-8');
+    return fs.outputFileAsync(path.join(outputPath,'../../',
+      app.manifest.shortName,
+      "tealeaf/src/main",
+      'res/values',
+      strings_file),
+      xmlStr.toString(), 'utf-8');
   }
 
   return Promise.resolve(true);
