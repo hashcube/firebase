@@ -5,7 +5,7 @@ var path = require('path'),
   xcodeUtil = require('../../devkit-core/modules/native-ios/lib/xcodeUtil'),
   copyFile = Promise.promisify(fs.copy);
 
-exports.onBeforeBuild = function (api, app, config, cb) {
+exports.onCreateProject = function (api, app, config, cb) {
   var firebase = app.manifest.addons.firebase || {},
     app_path = app.paths.root,
     xcodeProjectPath = config.xcodeProjectPath,
