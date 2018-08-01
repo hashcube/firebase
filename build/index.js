@@ -9,7 +9,7 @@ exports.onCreateProject = function (api, app, config, cb) {
   var firebase = app.manifest.addons.firebase || {},
     app_path = app.paths.root,
     xcodeProjectPath = config.xcodeProjectPath,
-    androidProjectPath = config.outputPath,
+    outputPath = config.outputPath,
     plist_file = 'GoogleService-Info.plist',
     strings_file = 'firebase_strings.xml',
     addPlist = function () {
@@ -66,7 +66,7 @@ exports.onCreateProject = function (api, app, config, cb) {
         currStrDom.val = googleConf[attrName];
       }
     }
-    return fs.outputFileAsync(path.join(androidProjectPath,'../../',
+    return fs.outputFileAsync(path.join(outputPath,'../../',
       app.manifest.shortName,
       "tealeaf/src/main",
       'res/values',
