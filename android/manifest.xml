@@ -4,8 +4,6 @@
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.WAKE_LOCK"/>
 <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-<uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES"/>
 <permission android:name="c2d_message" android:protectionLevel="signature"/>
 <uses-permission android:name="packageNamePermissionC2D"/>
 <!--END_PLUGINS_MANIFEST-->
