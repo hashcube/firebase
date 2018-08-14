@@ -38,7 +38,7 @@ exports.onCreateProject = function (api, app, config, cb) {
       // copy google-services.json from manifest config string `google_services_file`
       var googleServicesJsonFile = path.join(app_path, app.manifest.android.google_services_file);
       fs.copy(googleServicesJsonFile,
-          path.join(app_path, "build",app.manifest.shortName, "app", "google-services.json"));
+          path.join(config.outputPath, app.manifest.shortName, "app", "google-services.json"));
 
 
     srcFile = path.join(app_path, firebase.android);
@@ -66,7 +66,7 @@ exports.onCreateProject = function (api, app, config, cb) {
         currStrDom.val = googleConf[attrName];
       }
     }
-    return fs.outputFileAsync(path.join(outputPath,'../../',
+    return fs.outputFileAsync(path.join(outputPath,
       app.manifest.shortName,
       "tealeaf/src/main",
       'res/values',
