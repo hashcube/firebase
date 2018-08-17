@@ -76,15 +76,21 @@ var EVENTS = {
       NATIVE.plugins.sendEvent("FirebasePlugin", "setUserData", JSON.stringify(data));
     };
 
-    this.logEvent = function (e_name, params) {
+    this.logEvent = function (e_name, params, native_method) {
+      var method = native_method? native_method: "logEvent";
+
       if (e_name in fire_events) {
         params = _.pick(params, fire_events[e_name]);
       }
 
-      NATIVE.plugins.sendEvent("FirebasePlugin", "logEvent", JSON.stringify({
+      NATIVE.plugins.sendEvent("FirebasePlugin", method, JSON.stringify({
         eventName: e_name,
         params: params || {}
       }));
+    };
+
+    this.logActivationEvent = function (e_name, params) {
+      this.logEvent(e_name, params, "logActivationEvent");
     };
 
     this.setScreen = function (name) {
