@@ -75,6 +75,11 @@ static BOOL activate_fetched = NO;
         NSLog(@"{firebase} Config fetched!");
         [self.remoteConfig activateFetched];
         activate_fetched = YES;
+        if (self.pendingEventData) {
+          NSLog(@"{firebase} Pending event data, sending it now!");
+          [self logEvent:self.pendingEventData];
+          self.pendingEventData = nil;
+        }
       } else {
         NSLog(@"{firebase} Config not fetched");
         NSLog(@"{firebase} Error %@", error.localizedDescription);
@@ -158,8 +163,10 @@ static BOOL activate_fetched = NO;
 
 - (void) logActivationEvent: (NSDictionary*) eventData {
   if (activate_fetched) {
+    NSLog(@"{firebase} Activate fetched complete, send now!");
     [self logEvent: eventData];
   } else {
+      NSLog(@"{firebase} Activate fetched not complete, store and keep");
       self.pendingEventData = eventData;
   }
 }
