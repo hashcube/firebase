@@ -42,6 +42,9 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   private FirebaseAnalytics mFirebaseAnalytics;
   private FragmentActivity _activity;
   private FirebaseRemoteConfig mFirebaseRemoteConfig;
+  private String pendingEventData = null;
+  private boolean activate_fetched = false;
+  private FirebasePlugin mFirebasePlugin;
 
   public class ConfigValue extends com.tealeaf.event.Event {
     Map<String, String> data;
@@ -62,6 +65,7 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
   }
 
   public FirebasePlugin() {
+    mFirebasePlugin = this;
   }
 
   public void onCreateApplication(Context applicationContext) {
@@ -152,6 +156,12 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
         public void onComplete(@NonNull Task<Void> task) {
           if (task.isSuccessful()) {
             mFirebaseRemoteConfig.activateFetched();
+            activate_fetched = true;
+            if (pendingEventData != null) {
+              logger.log("{firebase} activate event pending, sending now");
+              mFirebasePlugin.logEvent(pendingEventData);
+              pendingEventData = null;
+            }
           } else {
             logger.log("{firebase} fetchConfig - failure");
           }
@@ -293,6 +303,16 @@ public class FirebasePlugin implements IPlugin, GoogleApiClient.OnConnectionFail
       logger.log("{firebase} track - success: " + eventName);
     } catch (JSONException e) {
       logger.log("{firebase} track - failure: " + eventName + " - " + e.getMessage());
+    }
+  }
+
+  public void logActivationEvent(String json) {
+    if(activate_fetched) {
+      logger.log("{firebase} logActivationEvent - activateFetched done, send event");
+      this.logEvent(json);
+    } else {
+      logger.log("{firebase} logActivationEvent - activateFetched pending, storing it");
+      pendingEventData = json;
     }
   }
 

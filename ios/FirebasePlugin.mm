@@ -3,6 +3,7 @@
 
 // Change this valus to YES to debug remote config
 static BOOL is_debug = NO;
+static BOOL activate_fetched = NO;
 
 @implementation FirebasePlugin
 
@@ -73,6 +74,12 @@ static BOOL is_debug = NO;
       if (status == FIRRemoteConfigFetchStatusSuccess) {
         NSLog(@"{firebase} Config fetched!");
         [self.remoteConfig activateFetched];
+        activate_fetched = YES;
+        if (self.pendingEventData) {
+          NSLog(@"{firebase} Pending event data, sending it now!");
+          [self logEvent:self.pendingEventData];
+          self.pendingEventData = nil;
+        }
       } else {
         NSLog(@"{firebase} Config not fetched");
         NSLog(@"{firebase} Error %@", error.localizedDescription);
@@ -151,6 +158,16 @@ static BOOL is_debug = NO;
     }
   } @catch (NSException *exception) {
     NSLog(@"{firebase} Exception while processing event: %@", exception);
+  }
+}
+
+- (void) logActivationEvent: (NSDictionary*) eventData {
+  if (activate_fetched) {
+    NSLog(@"{firebase} Activate fetched complete, send now!");
+    [self logEvent: eventData];
+  } else {
+      NSLog(@"{firebase} Activate fetched not complete, store and keep");
+      self.pendingEventData = eventData;
   }
 }
 
