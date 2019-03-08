@@ -1,5 +1,5 @@
 //<!--START_GOOGLE_PLAY_PLUGINS_CLASSPATH-->
 	//<!--Android Firebase Performance Plugin for Devkit Firebase Plugin-->
-    classpath 'com.google.firebase:firebase-plugins:1.1.5'
+    
 //<!--END_GOOGLE_PLAY_PLUGINS_CLASSPATH-->
 

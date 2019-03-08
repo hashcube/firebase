@@ -1,5 +1,5 @@
 //<!--START_ANDROID_PLUGINS-->
 	//<!--Android Firebase Perfornace Plugin for Devkit Firebase Plugin-->
-   apply plugin: 'com.google.firebase.firebase-perf'
+   
 //<!--END_ANDROID_PLUGINS-->
 

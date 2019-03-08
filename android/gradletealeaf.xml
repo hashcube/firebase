@@ -1,6 +1,5 @@
 //<!--START_PLUGINS_DEPENDENCIES-->
 	//<!--Firebase Dependencies-->
-     implementation 'com.google.firebase:firebase-perf:16.0.0'
      implementation 'com.google.firebase:firebase-config:16.0.0'
      implementation 'com.google.firebase:firebase-invites:16.0.0'
 //<!--END_PLUGINS_DEPENDENCIES-->
