@@ -37,7 +37,7 @@ exports.onCreateProject = function (api, app, config, cb) {
 
       // copy google-services.json from manifest config string `google_services_file`
       var googleServicesJsonFile = path.join(app_path, app.manifest.android.google_services_file);
-      fs.copy(googleServicesJsonFile,
+      fs.copySync(googleServicesJsonFile,
           path.join(config.outputPath, app.manifest.shortName, "app", "google-services.json"));
 
 
@@ -66,13 +66,14 @@ exports.onCreateProject = function (api, app, config, cb) {
         currStrDom.val = googleConf[attrName];
       }
     }
-    return fs.outputFileAsync(path.join(outputPath,
+    fs.outputFileSync(path.join(outputPath,
       app.manifest.shortName,
       "tealeaf/src/main",
       'res/values',
       strings_file),
       xmlStr.toString(), 'utf-8');
+    return Promise.resolve(true);
   }
 
-  return Promise.resolve(true);
+
 }
