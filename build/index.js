@@ -37,7 +37,11 @@ exports.onCreateProject = function (api, app, config, cb) {
 
       // copy google-services.json from manifest config string `google_services_file`
       var googleServicesJsonFile = path.join(app_path, app.manifest.android.google_services_file);
+<<<<<<< HEAD
       fs.copySync(googleServicesJsonFile,
+=======
+      fs.copy(googleServicesJsonFile,
+>>>>>>> 856c1b2eca32c491c60d520e7771438d16fce031
           path.join(config.outputPath, app.manifest.shortName, "app", "google-services.json"));
 
 
