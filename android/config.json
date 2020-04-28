@@ -4,7 +4,5 @@
   ],
   "injectionXML": "manifest.xml",
   "injectionXSL": "manifest.xsl",
-  "injectionAppGradleXML": "gradleapp.xml",
   "injectionGradleClasspathXML": "gradleclasspath.xml",
-  "injectionTealeafModuleGradleXML": "gradletealeaf.xml"
 }
