@@ -1,6 +1,6 @@
 {
   "name": "firebase",
-  "version": "1.1.20",
+  "version": "1.1.21",
   "devkit": {
     "clientPaths": {
       "firebase": "js"
